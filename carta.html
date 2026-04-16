@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Una carta especial 💌</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lato:wght@300;400&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background: linear-gradient(135deg, #ffe0f0 0%, #ffd6e8 40%, #fce4ec 70%, #ffe8f5 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Lato', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ─── Partículas decorativas flotantes ─── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+
+    .particle span {
+      display: block;
+      font-size: 1.4rem;
+      filter: drop-shadow(0 0 4px rgba(255, 100, 150, 0.4));
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.8; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ─── Título ─── */
+    .title {
+      position: relative;
+      z-index: 10;
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.4rem;
+      color: #c2185b;
+      text-shadow: 0 2px 12px rgba(194, 24, 91, 0.25);
+      margin-bottom: 3rem;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Escena del sobre ─── */
+    .scene {
+      position: relative;
+      z-index: 10;
+      width: 340px;
+      height: 470px;
+      margin-top: 70px;
+    }
+
+    /* ─── Sobre ─── */
+    .envelope {
+      position: relative;
+      width: 340px;
+      height: 260px;
+    }
+
+    /* Cuerpo del sobre */
+    .env-body {
+      position: absolute;
+      top: 70px;
+      width: 340px;
+      height: 190px;
+      background: linear-gradient(160deg, #fff0f6 0%, #ffe4f0 100%);
+      border-radius: 4px 4px 10px 10px;
+      box-shadow:
+        0 8px 32px rgba(194, 24, 91, 0.18),
+        0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    /* Triángulos laterales del sobre */
+    .env-body::before,
+    .env-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+    }
+    .env-body::before {
+      left: 0;
+      border-style: solid;
+      border-width: 0 0 190px 170px;
+      border-color: transparent transparent #f8bbd0 transparent;
+    }
+    .env-body::after {
+      right: 0;
+      border-style: solid;
+      border-width: 190px 0 0 170px;
+      border-color: transparent transparent transparent #f8bbd0;
+    }
+
+    /* Solapa inferior (triángulo central) */
+    .env-flap-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 170px 130px 170px;
+      border-color: transparent transparent #f48fb1 transparent;
+      z-index: 1;
+    }
+
+    /* Solapa superior (la que se abre) */
+    .env-flap-top {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 340px;
+      height: 120px;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      -webkit-transform: rotateX(0deg);
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 6;
+      perspective: 800px;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .env-flap-top svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Estado abierto de la solapa */
+    .envelope.open .env-flap-top {
+      transform: rotateX(-175deg);
+      -webkit-transform: rotateX(-175deg);
+    }
+
+    /* ─── Carta dentro del sobre ─── */
+    .letter {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(0px);
+      width: 290px;
+      min-height: 220px;
+      background: #fff;
+      border-radius: 6px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      z-index: 4;
+      transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s,
+                  opacity 0.5s ease 0.5s;
+      opacity: 0;
+      background-image:
+        repeating-linear-gradient(
+          transparent,
+          transparent 27px,
+          #f8bbd0 28px
+        );
+      background-size: 100% 28px;
+      background-position: 0 36px;
+    }
+
+    .envelope.open .letter {
+      transform: translateX(-50%) translateY(35px);
+      opacity: 1;
+      z-index: 12;
+    }
+
+    .letter-header {
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: #c2185b;
+      margin-bottom: 14px;
+    }
+
+    .letter-text {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.05rem;
+      color: #5d3a4a;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .letter-footer {
+      margin-top: 14px;
+      text-align: right;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      color: #e91e8c;
+    }
+
+    /* ─── Botón sello ─── */
+    .seal-btn {
+      position: absolute;
+      top: 180px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 11;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: radial-gradient(circle at 35% 35%, #e91e8c, #880e4f);
+      cursor: pointer;
+      box-shadow:
+        0 4px 16px rgba(136, 14, 79, 0.45),
+        inset 0 -3px 6px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.35s ease;
+      user-select: none;
+    }
+
+    .seal-btn:hover {
+      transform: translate(-50%, -50%) scale(1.08);
+      box-shadow:
+        0 6px 20px rgba(136, 14, 79, 0.55),
+        inset 0 -3px 6px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(255,255,255,0.2);
+    }
+
+    .seal-btn:active {
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+
+    .seal-btn.opened {
+      background: radial-gradient(circle at 35% 35%, #9e9e9e, #616161);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .envelope.open .seal-btn {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.65);
+      pointer-events: none;
+    }
+
+    /* Ripple del sello */
+    .seal-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .seal-btn:active::after { opacity: 1; }
+
+    /* ─── Destellos al abrir ─── */
+    .sparkle-container {
+      position: absolute;
+      inset: -60px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .sparkle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    .sparkle.fire {
+      animation: sparkleShoot 0.7s ease-out forwards;
+    }
+
+    @keyframes sparkleShoot {
+      0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); }
+    }
+
+    /* ─── Hint text ─── */
+    .hint {
+      margin-top: 4.5rem;
+      font-size: 0.85rem;
+      color: #e91e8c;
+      opacity: 0.7;
+      letter-spacing: 0.5px;
+      transition: opacity 0.5s;
+      position: relative;
+      z-index: 10;
+    }
+    .hint.hidden { opacity: 0; }
+
+    .music-toggle {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 30;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.86);
+      color: #c2185b;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .music-toggle:active {
+      transform: scale(0.98);
+    }
+
+    .music-status {
+      position: fixed;
+      right: 16px;
+      bottom: 64px;
+      z-index: 30;
+      max-width: 230px;
+      font-size: 0.78rem;
+      color: #a41353;
+      background: rgba(255, 255, 255, 0.82);
+      padding: 6px 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .music-status.visible {
+      display: block;
+    }
+
+    .sc-player-host {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+      top: -9999px;
+    }
+
+    /* ─── Corazones decorativos grandes ─── */
+    .deco-hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .deco-heart {
+      position: absolute;
+      font-size: 5rem;
+      opacity: 0.07;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1) rotate(var(--r)); }
+      50%      { transform: scale(1.15) rotate(var(--r)); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corazones grandes decorativos de fondo -->
+  <div class="deco-hearts" id="decoHearts"></div>
+
+  <!-- Partículas flotantes -->
+  <div class="particles" id="particles"></div>
+
+  <h1 class="title">✦ Para ti, con cariño ✦</h1>
+
+  <!-- Escena principal -->
+  <div class="scene">
+    <div class="envelope" id="envelope">
+
+      <!-- Carta (dentro del sobre) -->
+      <div class="letter" id="letter">
+        <div class="letter-header">💌 Para ti</div>
+        <div class="letter-text">
+          Hay personas que llegan a tu vida<br>
+          y la iluminan para siempre.<br><br>
+          Gracias por ser esa luz,<br>
+          por cada sonrisa que regalaas,<br>
+          y por hacer que los días<br>
+          valgan la pena. 🌸<br><br>
+          Eres especial. No lo olvides.
+        </div>
+        <div class="letter-footer">Con todo mi cariño 💖</div>
+      </div>
+
+      <!-- Cuerpo del sobre -->
+      <div class="env-body">
+        <div class="env-flap-bottom"></div>
+      </div>
+
+      <!-- Solapa superior (se abre) -->
+      <div class="env-flap-top" id="flapTop">
+        <svg viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="0,0 340,0 170,110" fill="#f06292"/>
+          <!-- corazón en la solapa -->
+          <text x="170" y="58" text-anchor="middle" font-size="28" fill="rgba(255,255,255,0.6)">♥</text>
+        </svg>
+      </div>
+
+      <!-- Sello botón -->
+      <button class="seal-btn" id="sealBtn" title="Abrir carta" aria-label="Abrir carta">
+        💌
+      </button>
+
+      <!-- Destellos -->
+      <div class="sparkle-container" id="sparkles"></div>
+
+    </div>
+  </div>
+
+  <p class="hint" id="hint">Presiona el sello para abrir la carta</p>
+
+  <iframe id="scPlayerHost" class="sc-player-host"
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/brunomars/risk-it-all&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false"
+    allow="autoplay"
+    scrolling="no"
+    frameborder="no"></iframe>
+
+  <p class="music-status" id="musicStatus"></p>
+
+  <button class="music-toggle" id="musicToggle" aria-label="Activar o pausar musica">🔇</button>
+
+  <script>
+    // ─── Partículas flotantes ───────────────────────────────────────────
+    const particleEmojis = ['❤️','💕','🌸','✨','💖','🌺','💫','🌷','💝','⭐'];
+    const particlesEl = document.getElementById('particles');
+
+    function createParticle() {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 0.8 + Math.random() * 1.2;
+      p.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        animation-duration: ${6 + Math.random() * 10}s;
+        animation-delay: ${Math.random() * 8}s;
+      `;
+      p.innerHTML = `<span style="font-size:${size}rem">${particleEmojis[Math.floor(Math.random()*particleEmojis.length)]}</span>`;
+      particlesEl.appendChild(p);
+    }
+    for (let i = 0; i < 30; i++) createParticle();
+
+    // ─── Corazones de fondo grandes ────────────────────────────────────
+    const decoEl = document.getElementById('decoHearts');
+    const positions = [
+      [5,10],[15,75],[85,5],[90,80],[50,3],[30,90],[70,50],[8,50],[92,35]
+    ];
+    positions.forEach(([l, t]) => {
+      const h = document.createElement('div');
+      h.className = 'deco-heart';
+      const rot = (Math.random()-0.5)*40;
+      h.style.cssText = `left:${l}%;top:${t}%;--r:${rot}deg;animation-delay:${Math.random()*3}s`;
+      h.textContent = '♥';
+      decoEl.appendChild(h);
+    });
+
+    // ─── Lógica del sobre ──────────────────────────────────────────────
+    const btn     = document.getElementById('sealBtn');
+    const env     = document.getElementById('envelope');
+    const hint    = document.getElementById('hint');
+    const sparkEl = document.getElementById('sparkles');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicStatus = document.getElementById('musicStatus');
+    // SoundCloud Widget
+    const SC_TRACK_URL = 'https://soundcloud.com/brunomars/risk-it-all';
+    let scWidget = null;
+    let scReady = false;
+    let opened = false;
+    let isMusicOn = false;
+    let pendingPlay = false;
+
+    // ─── Web Audio API fallback (melodía romántica generada) ───────────
+    let audioCtx = null;
+    let webAudioNodes = [];
+    let webAudioActive = false;
+    let useWebAudio = false;
+    let melodyInterval = null;
+
+    const NOTES = {
+      C4:261.63, D4:293.66, E4:329.63, F4:349.23,
+      G4:392.00, A4:440.00, B4:493.88, C5:523.25,
+      D5:587.33, E5:659.25, G5:783.99, A5:880.00
+    };
+
+    // Secuencia de notas (melodía suave romántica)
+    const melody = [
+      ['E4',0.5],['G4',0.5],['A4',1],['G4',0.5],['E4',0.5],
+      ['C4',1],['D4',0.5],['E4',0.5],['F4',1],['E4',0.5],['D4',0.5],
+      ['G4',1],['A4',0.5],['B4',0.5],['C5',1.5],
+      ['B4',0.5],['A4',0.5],['G4',1],['F4',0.5],['E4',0.5],
+      ['D4',1],['E4',0.5],['F4',0.5],['G4',2]
+    ];
+
+    function playWebAudioNote(freq, startTime, duration, ctx, masterGain) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.18, startTime + 0.06);
+      gain.gain.setValueAtTime(0.18, startTime + duration - 0.08);
+      gain.gain.linearRampToValueAtTime(0, startTime + duration);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+      return osc;
+    }
+
+    function startWebAudio() {
+      if (webAudioActive) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      webAudioActive = true;
+      isMusicOn = true;
+      updateMusicButton();
+      setMusicStatus('');
+
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(1, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+      webAudioNodes = [masterGain];
+
+      let currentTime = audioCtx.currentTime + 0.1;
+      const tempo = 0.42; // segundos por beat
+
+      function scheduleMelody() {
+        let t = audioCtx.currentTime + 0.1;
+        melody.forEach(([note, beats]) => {
+          const freq = NOTES[note];
+          const dur  = beats * tempo;
+          playWebAudioNote(freq, t, dur * 0.92, audioCtx, masterGain);
+          t += dur;
+        });
+        return t - audioCtx.currentTime;
+      }
+
+      const totalDuration = scheduleMelody();
+      melodyInterval = setInterval(() => {
+        if (!webAudioActive) { clearInterval(melodyInterval); return; }
+        scheduleMelody();
+      }, totalDuration * 1000 - 100);
+    }
+
+    function stopWebAudio() {
+      webAudioActive = false;
+      clearInterval(melodyInterval);
+      if (audioCtx) {
+        webAudioNodes.forEach(n => { try { n.disconnect(); } catch(_){} });
+        webAudioNodes = [];
+      }
+      isMusicOn = false;
+      updateMusicButton();
+    }
+
+    // ─── Funciones principales de música ──────────────────────────────
+
+    function setMusicStatus(msg) {
+      if (!musicStatus) return;
+      if (!msg) {
+        musicStatus.textContent = '';
+        musicStatus.classList.remove('visible');
+        return;
+      }
+      musicStatus.textContent = msg;
+      musicStatus.classList.add('visible');
+    }
+
+    function updateMusicButton() {
+      musicToggle.textContent = isMusicOn ? '🔊' : '🔇';
+      musicToggle.setAttribute('aria-label', isMusicOn ? 'Musica encendida' : 'Musica apagada');
+    }
+
+    function playMusic() {
+      if (useWebAudio) { startWebAudio(); return true; }
+      if (!scReady || !scWidget) {
+        pendingPlay = true;
+        return false;
+      }
+      try {
+        scWidget.setVolume(100);
+        scWidget.play();
+        isMusicOn = true;
+        setMusicStatus('');
+        updateMusicButton();
+        return true;
+      } catch (_) {
+        useWebAudio = true;
+        startWebAudio();
+        return false;
+      }
+    }
+
+    function pauseMusic() {
+      if (useWebAudio) { stopWebAudio(); return; }
+      if (!scReady || !scWidget) {
+        isMusicOn = false;
+        updateMusicButton();
+        return;
+      }
+      scWidget.pause();
+      isMusicOn = false;
+      updateMusicButton();
+    }
+
+    function tryStartMusic() {
+      if (isMusicOn) return;
+      playMusic();
+    }
+
+    function loadSoundCloudApi() {
+      const script = document.createElement('script');
+      script.src = 'https://w.soundcloud.com/player/api.js';
+      script.onload = () => {
+        const iframe = document.getElementById('scPlayerHost');
+        scWidget = SC.Widget(iframe);
+        scWidget.bind(SC.Widget.Events.READY, () => {
+          scReady = true;
+          scWidget.setVolume(100);
+          scWidget.seekTo(22000);
+          setMusicStatus('');
+          if (pendingPlay) {
+            pendingPlay = false;
+            scWidget.play();
+            isMusicOn = true;
+            updateMusicButton();
+          }
+        });
+        scWidget.bind(SC.Widget.Events.PLAY, () => {
+          isMusicOn = true;
+          useWebAudio = false;
+          updateMusicButton();
+        });
+        scWidget.bind(SC.Widget.Events.PAUSE, () => {
+          isMusicOn = false;
+          updateMusicButton();
+        });
+        scWidget.bind(SC.Widget.Events.FINISH, () => {
+          isMusicOn = false;
+          updateMusicButton();
+        });
+        scWidget.bind(SC.Widget.Events.ERROR, () => {
+          useWebAudio = true;
+          setMusicStatus('');
+          startWebAudio();
+        });
+      };
+      script.onerror = () => { useWebAudio = true; };
+      document.head.appendChild(script);
+    }
+
+    loadSoundCloudApi();
+
+    // Primer gesto desbloquea audio si autoplay fue bloqueado
+    function unlockOnGesture() {
+      if (!isMusicOn) playMusic();
+      document.removeEventListener('pointerdown', unlockOnGesture);
+      document.removeEventListener('touchstart', unlockOnGesture);
+    }
+    document.addEventListener('pointerdown', unlockOnGesture);
+    document.addEventListener('touchstart', unlockOnGesture);
+
+    musicToggle.addEventListener('click', () => {
+      if (!isMusicOn) {
+        playMusic();
+      } else {
+        pauseMusic();
+      }
+    });
+
+    updateMusicButton();
+
+    function launchSparkles() {
+      const colors = ['#ff4081','#e91e8c','#ff80ab','#f8bbd0','#fff176','#ffe082'];
+      for (let i = 0; i < 18; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const angle = (i / 18) * 360;
+        const dist  = 60 + Math.random() * 80;
+        const rad   = angle * Math.PI / 180;
+        const tx    = Math.cos(rad) * dist + 'px';
+        const ty    = Math.sin(rad) * dist + 'px';
+        s.style.cssText = `
+          background: ${colors[Math.floor(Math.random()*colors.length)]};
+          --tx: ${tx}; --ty: ${ty};
+          width: ${6 + Math.random()*8}px;
+          height: ${6 + Math.random()*8}px;
+          animation-delay: ${Math.random()*0.2}s;
+        `;
+        s.classList.add('fire');
+        sparkEl.appendChild(s);
+        setTimeout(() => s.remove(), 900);
+      }
+    }
+
+    btn.addEventListener('click', () => {
+      if (opened) return;
+      opened = true;
+
+      if (!isMusicOn) playMusic();
+
+      launchSparkles();
+      btn.classList.add('opened');
+      btn.textContent = '✉️';
+
+      // Pequeña vibración del sobre antes de abrir
+      env.style.animation = 'none';
+      env.style.transition = 'transform 0.1s';
+      let shakes = 0;
+      const shakeInterval = setInterval(() => {
+        env.style.transform = shakes % 2 === 0 ? 'rotate(-2deg)' : 'rotate(2deg)';
+        shakes++;
+        if (shakes > 5) {
+          clearInterval(shakeInterval);
+          env.style.transform = 'rotate(0deg)';
+          // Abrir el sobre
+          setTimeout(() => {
+            env.classList.add('open');
+            hint.classList.add('hidden');
+          }, 100);
+        }
+      }, 60);
+    });
+  </script>
+</body>
+</html>
