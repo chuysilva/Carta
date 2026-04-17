@@ -57,8 +57,7 @@
       font-size: 2.4rem;
       color: #c2185b;
       text-shadow: 0 2px 12px rgba(194, 24, 91, 0.25);
-      margin-top: 40px;
-      margin-bottom: 0;
+      margin-bottom: 1.5rem;
       letter-spacing: 1px;
     }
 
@@ -166,7 +165,7 @@
       bottom: 18px;
       left: 50%;
       transform: translateX(-50%) translateY(0px);
-      width: 450px;
+      width: 365px;
       min-height: 250px;
       background: #fff;
       border-radius: 6px;
@@ -184,47 +183,6 @@
         );
       background-size: 100% 28px;
       background-position: 0 36px;
-    }
-
-    .save-letter-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 34px;
-      height: 34px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.95);
-      color: #c2185b;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      z-index: 20;
-    }
-
-    .save-letter-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .save-letter-btn:active {
-      transform: scale(0.95);
-    }
-
-    .save-letter-btn.saved {
-      background: #ffe9f4;
-      color: #e91e63;
-      animation: savePulse 0.5s ease;
-    }
-
-    @keyframes savePulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.16); }
-      100% { transform: scale(1); }
     }
 
     .envelope.open .letter {
@@ -245,7 +203,7 @@
 
     .letter-text {
       font-family: 'Lato', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.94rem;
       font-weight: 400;
       color: #5d3a4a;
       line-height: 1.56;
@@ -440,7 +398,7 @@
   <!-- Partículas flotantes -->
   <div class="particles" id="particles"></div>
 
-  <h1 class="title">✦ Para mi amorsote ✦</h1>
+  <h1 class="title">✦ Para ti, con cariño ✦</h1>
 
   <!-- Escena principal -->
   <div class="scene">
@@ -448,8 +406,7 @@
 
       <!-- Carta (dentro del sobre) -->
       <div class="letter" id="letter">
-        <button class="save-letter-btn" id="saveLetterBtn" title="Guardar en sobre" aria-label="Guardar en sobre">📩</button>
-        <div class="letter-header"></div>
+        <div class="letter-header">💌 Para ti</div>
         <div class="letter-text">
           Hola, mi amor:<br><br>
           Quiero empezar esta carta diciendo que te amo mucho y que estoy muy contento de tenerte a mi lado.<br><br>
@@ -461,9 +418,10 @@
           Me encanta la forma en que nos cuidamos. Eres ese lugar seguro al que siempre quiero volver, sin importar lo pesado<br>
           que haya sido el día, porque un solo mensaje tuyo tiene el poder para alegrarme el dia.<br><br>
           Gracias por tu paciencia y por tu entrega.<br>
-          Prometo seguir esforzándome para que cada día te sientas tan amada como me haces sentir tú a mí
+          Prometo seguir esforzándome para que cada día te sientas tan amada como me haces sentir tú a mí<br><br>
+          ¡Felices 5 mesesotes, amor! &lt;3
         </div>
-        <div class="letter-footer">¡Felices 5 mesesotes, amor! 🤍</div>
+        <div class="letter-footer">Con todo mi cariño 💖</div>
       </div>
 
       <!-- Cuerpo del sobre -->
@@ -540,8 +498,6 @@
     const btn     = document.getElementById('sealBtn');
     const env     = document.getElementById('envelope');
     const hint    = document.getElementById('hint');
-    const letter  = document.getElementById('letter');
-    const saveLetterBtn = document.getElementById('saveLetterBtn');
     const sparkEl = document.getElementById('sparkles');
     const musicToggle = document.getElementById('musicToggle');
     const musicStatus = document.getElementById('musicStatus');
@@ -754,35 +710,6 @@
     });
 
     updateMusicButton();
-
-    function runSaveEffect() {
-      saveLetterBtn.classList.add('saved');
-      saveLetterBtn.textContent = '✅';
-      setTimeout(() => {
-        saveLetterBtn.classList.remove('saved');
-        saveLetterBtn.textContent = '📩';
-      }, 1200);
-    }
-
-    saveLetterBtn.addEventListener('click', () => {
-      if (!opened) return;
-
-      // Efecto visual de guardado y cierre de carta en el sobre.
-      letter.style.boxShadow = '0 8px 24px rgba(233, 30, 99, 0.28)';
-      setTimeout(() => {
-        letter.style.boxShadow = '0 2px 12px rgba(0,0,0,0.10)';
-      }, 450);
-
-      runSaveEffect();
-
-      setTimeout(() => {
-        env.classList.remove('open');
-        hint.classList.remove('hidden');
-        btn.classList.remove('opened');
-        btn.textContent = '💌';
-        opened = false;
-      }, 180);
-    });
 
     function launchSparkles() {
       const colors = ['#ff4081','#e91e8c','#ff80ab','#f8bbd0','#fff176','#ffe082'];
