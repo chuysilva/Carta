@@ -9,6 +9,19 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --env-w: min(390px, 92vw);
+      --half-env: calc(var(--env-w) / 2);
+      --env-top: calc(var(--env-w) * 0.1795);
+      --env-body-h: calc(var(--env-w) * 0.6154);
+      --flap-h: calc(var(--env-w) * 0.4359);
+      --flap-bottom-h: calc(var(--env-w) * 0.4615);
+      --scene-h: calc(var(--env-w) * 1.333);
+      --letter-w: min(calc(var(--env-w) * 1.154), 96vw);
+      --letter-open-y: calc(var(--env-w) * 0.4487);
+      --seal-top: calc(var(--env-w) * 0.5513);
+    }
+
     body {
       min-height: 100vh;
       min-height: 100svh;
@@ -54,7 +67,7 @@
       position: relative;
       z-index: 10;
       font-family: 'Dancing Script', cursive;
-      font-size: 2.4rem;
+      font-size: clamp(1.6rem, 7vw, 2.4rem);
       color: #c2185b;
       text-shadow: 0 2px 12px rgba(194, 24, 91, 0.25);
       margin-bottom: 1.5rem;
@@ -65,24 +78,24 @@
     .scene {
       position: relative;
       z-index: 10;
-      width: 390px;
-      height: 520px;
+      width: var(--env-w);
+      height: var(--scene-h);
       margin-top: 35px;
     }
 
     /* ─── Sobre ─── */
     .envelope {
       position: relative;
-      width: 390px;
-      height: 310px;
+      width: var(--env-w);
+      height: calc(var(--env-top) + var(--env-body-h));
     }
 
     /* Cuerpo del sobre */
     .env-body {
       position: absolute;
-      top: 70px;
-      width: 390px;
-      height: 240px;
+      top: var(--env-top);
+      width: var(--env-w);
+      height: var(--env-body-h);
       background: linear-gradient(160deg, #fff0f6 0%, #ffe4f0 100%);
       border-radius: 4px 4px 10px 10px;
       box-shadow:
@@ -104,13 +117,13 @@
     .env-body::before {
       left: 0;
       border-style: solid;
-      border-width: 0 0 240px 195px;
+      border-width: 0 0 var(--env-body-h) var(--half-env);
       border-color: transparent transparent #f8bbd0 transparent;
     }
     .env-body::after {
       right: 0;
       border-style: solid;
-      border-width: 240px 0 0 195px;
+      border-width: var(--env-body-h) 0 0 var(--half-env);
       border-color: transparent transparent transparent #f8bbd0;
     }
 
@@ -123,7 +136,7 @@
       width: 0;
       height: 0;
       border-style: solid;
-      border-width: 0 195px 180px 195px;
+      border-width: 0 var(--half-env) var(--flap-bottom-h) var(--half-env);
       border-color: transparent transparent #f48fb1 transparent;
       z-index: 1;
     }
@@ -131,16 +144,16 @@
     /* Solapa superior (la que se abre) */
     .env-flap-top {
       position: absolute;
-      top: 70px;
+      top: var(--env-top);
       left: 0;
-      width: 390px;
-      height: 170px;
+      width: var(--env-w);
+      height: var(--flap-h);
       transform-origin: top center;
       transform: rotateX(0deg);
       -webkit-transform: rotateX(0deg);
       transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 6;
-      perspective: 800px;
+      perspective: min(800px, 205vw);
       transform-style: preserve-3d;
       -webkit-transform-style: preserve-3d;
       backface-visibility: hidden;
@@ -165,7 +178,7 @@
       bottom: 18px;
       left: 50%;
       transform: translateX(-50%) translateY(0px);
-      width: 450px;
+      width: var(--letter-w);
       min-height: 250px;
       background: #fff;
       border-radius: 6px;
@@ -227,7 +240,7 @@
     }
 
     .envelope.open .letter {
-      transform: translateX(-50%) translateY(175px);
+      transform: translateX(-50%) translateY(var(--letter-open-y));
       opacity: 1;
       z-index: 12;
     }
@@ -264,7 +277,7 @@
     /* ─── Botón sello ─── */
     .seal-btn {
       position: absolute;
-      top: 215px;
+      top: var(--seal-top);
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 11;
